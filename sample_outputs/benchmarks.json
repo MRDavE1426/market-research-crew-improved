@@ -1,0 +1,179 @@
+{
+  "runs": [
+    {
+      "run_id": "83ba6fcd",
+      "query": "Tech Sector Q3 Analysis",
+      "mode": "offline",
+      "manager_llm": "gpt-4o",
+      "process": "hierarchical",
+      "started_at": "2026-11-23T09:05:53+00:00",
+      "finished_at": "2026-11-23T09:05:53+00:00",
+      "total_duration_seconds": 0.061,
+      "status": "completed",
+      "error": null,
+      "tasks": [
+        {
+          "task": "research_task",
+          "agent": "Market Research Specialist",
+          "duration_seconds": 0.0,
+          "status": "completed",
+          "finished_at": "2026-11-23T09:05:53+00:00",
+          "output_preview": ""
+        },
+        {
+          "task": "analysis_task",
+          "agent": "Financial Data Analyst",
+          "duration_seconds": 0.013,
+          "status": "completed",
+          "finished_at": "2026-11-23T09:05:53+00:00",
+          "output_preview": ""
+        },
+        {
+          "task": "writing_task",
+          "agent": "Technical Reports Writer",
+          "duration_seconds": 0.009,
+          "status": "completed",
+          "finished_at": "2026-11-23T09:05:53+00:00",
+          "output_preview": ""
+        },
+        {
+          "task": "pdf_compilation",
+          "agent": "Report Compiler (post-processing)",
+          "duration_seconds": 0.037,
+          "status": "completed",
+          "finished_at": "2026-11-23T09:05:53+00:00",
+          "output_preview": ""
+        }
+      ],
+      "agent_activity": {},
+      "routing_history": [
+        {
+          "timestamp": "2026-11-23T09:05:53+00:00",
+          "elapsed_s": 0.0,
+          "event": "manager_init",
+          "from": "Crew Manager",
+          "to": null,
+          "detail": "offline simulation of hierarchical delegation"
+        },
+        {
+          "timestamp": "2026-11-23T09:05:53+00:00",
+          "elapsed_s": 0.0,
+          "event": "delegation",
+          "from": "Crew Manager",
+          "to": "Market Research Specialist",
+          "detail": "research_task: collect company metrics"
+        },
+        {
+          "timestamp": "2026-11-23T09:05:53+00:00",
+          "elapsed_s": 0.0,
+          "event": "task_started",
+          "from": "Crew Manager",
+          "to": "Market Research Specialist",
+          "detail": "research_task"
+        },
+        {
+          "timestamp": "2026-11-23T09:05:53+00:00",
+          "elapsed_s": 0.0,
+          "event": "tool_call",
+          "from": "Market Research Specialist",
+          "to": "Web Search and Scrape",
+          "detail": "skipped in offline mode"
+        },
+        {
+          "timestamp": "2026-11-23T09:05:53+00:00",
+          "elapsed_s": 0.0,
+          "event": "tool_call",
+          "from": "Market Research Specialist",
+          "to": "Save Metrics CSV",
+          "detail": "/home/claude/market-research-crew/sample_outputs/metrics.csv"
+        },
+        {
+          "timestamp": "2026-11-23T09:05:53+00:00",
+          "elapsed_s": 0.0,
+          "event": "task_completed",
+          "from": "Market Research Specialist",
+          "to": null,
+          "detail": "research_task finished in 0.0s"
+        },
+        {
+          "timestamp": "2026-11-23T09:05:53+00:00",
+          "elapsed_s": 0.0,
+          "event": "delegation",
+          "from": "Crew Manager",
+          "to": "Financial Data Analyst",
+          "detail": "analysis_task: compute statistics"
+        },
+        {
+          "timestamp": "2026-11-23T09:05:53+00:00",
+          "elapsed_s": 0.0,
+          "event": "task_started",
+          "from": "Crew Manager",
+          "to": "Financial Data Analyst",
+          "detail": "analysis_task"
+        },
+        {
+          "timestamp": "2026-11-23T09:05:53+00:00",
+          "elapsed_s": 0.0,
+          "event": "tool_call",
+          "from": "Financial Data Analyst",
+          "to": "Calculate Financial Metrics",
+          "detail": "/home/claude/market-research-crew/sample_outputs/metrics.csv"
+        },
+        {
+          "timestamp": "2026-11-23T09:05:53+00:00",
+          "elapsed_s": 0.013,
+          "event": "task_completed",
+          "from": "Financial Data Analyst",
+          "to": null,
+          "detail": "analysis_task finished in 0.013s"
+        },
+        {
+          "timestamp": "2026-11-23T09:05:53+00:00",
+          "elapsed_s": 0.013,
+          "event": "delegation",
+          "from": "Crew Manager",
+          "to": "Technical Reports Writer",
+          "detail": "writing_task: draft the report"
+        },
+        {
+          "timestamp": "2026-11-23T09:05:53+00:00",
+          "elapsed_s": 0.013,
+          "event": "task_started",
+          "from": "Crew Manager",
+          "to": "Technical Reports Writer",
+          "detail": "writing_task"
+        },
+        {
+          "timestamp": "2026-11-23T09:05:53+00:00",
+          "elapsed_s": 0.022,
+          "event": "task_completed",
+          "from": "Technical Reports Writer",
+          "to": null,
+          "detail": "writing_task finished in 0.009s"
+        },
+        {
+          "timestamp": "2026-11-23T09:05:53+00:00",
+          "elapsed_s": 0.024,
+          "event": "task_started",
+          "from": "Crew Manager",
+          "to": "Report Compiler (post-processing)",
+          "detail": "pdf_compilation"
+        },
+        {
+          "timestamp": "2026-11-23T09:05:53+00:00",
+          "elapsed_s": 0.061,
+          "event": "task_completed",
+          "from": "Report Compiler (post-processing)",
+          "to": null,
+          "detail": "pdf_compilation finished in 0.037s"
+        }
+      ],
+      "artifacts": {
+        "pdf": "/home/claude/market-research-crew/sample_outputs/market_report.pdf",
+        "markdown": "/home/claude/market-research-crew/sample_outputs/market_report.md",
+        "metrics_csv": "/home/claude/market-research-crew/sample_outputs/metrics.csv",
+        "benchmarks": "/home/claude/market-research-crew/sample_outputs/benchmarks.json"
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+# Task definitions. Tasks are intentionally NOT bound to an agent: the manager
+# LLM (Process.hierarchical) decides who executes each one and delegates.
+research_task:
+  name: "research_task"
+  description: >
+    Delegate to the Market Research Specialist.
+    Research the topic "{query}". Use the web search & scrape tool (several
+    queries are fine) to find recent financial metrics for 6-12 relevant
+    companies. Then call the "Save Metrics CSV" tool ONCE with a CSV that has
+    a header row, a first column named "company", and numeric columns such as
+    revenue_usd_bn, net_income_usd_bn, operating_margin_pct, yoy_growth_pct.
+    Use plain numbers only (no currency symbols). Never invent values; leave a
+    cell empty if the figure was not found. Finish with a short list of the
+    sources you used.
+  expected_output: >
+    The path of the saved metrics CSV file plus a bullet list of source URLs
+    and key qualitative findings.
+
+analysis_task:
+  name: "analysis_task"
+  description: >
+    Delegate to the Financial Data Analyst.
+    Take the CSV file saved by the research task and run the "Calculate
+    Financial Metrics" tool on its path. Verify numeric consistency (missing
+    values, duplicates, negative or implausible numbers) and interpret the
+    mean, min, max and standard deviation of every metric.
+  expected_output: >
+    The Markdown statistics table returned by the tool, followed by a short
+    list of data-quality findings and 3-5 analytical observations.
+
+writing_task:
+  name: "writing_task"
+  description: >
+    Delegate to the Technical Reports Writer.
+    Write the final market report for "{query}" in Markdown, using ONLY the
+    research notes and statistics from the previous tasks. Required sections
+    (use "##" headings): Executive Summary, Market Overview, Key Financial
+    Metrics (embed the statistics table), Analysis & Insights, Risks &
+    Limitations, Conclusion, Sources. Do not add a top-level "#" title.
+  expected_output: >
+    A complete Markdown report with the required sections.

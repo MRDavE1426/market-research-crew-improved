@@ -1,0 +1,14 @@
+# secrets
+.env
+
+# python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# generated runtime output (sample_outputs/ is committed on purpose)
+output/*
+!output/.gitkeep
