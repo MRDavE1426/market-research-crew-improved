@@ -104,7 +104,7 @@ data/sample_metrics.csv    synthetic demo dataset
    `[MANAGER] Initializing hierarchical workflow | manager_llm=...`, then `[ROUTING] delegation | Crew Manager -> <specialist>`
    lines followed by each specialist's tool calls (Researcher fetching, Analyst parsing, Writer generating).
 2. **Aggregation & PDF** - `output/market_report.pdf` is written with the banner, the Pandas tables and page numbers.
-3. **Test suite** - `pytest` (42 tests, no network or API keys needed).
+3. **Test suite** - `pytest` (43 tests, no network or API keys needed).
 
 ### What the tests cover
 - `test_financial_tool.py` - statistics on a mock CSV (mean/min/max/std), currency/percent coercion, data-quality flags, edge cases.
