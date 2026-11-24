@@ -3,27 +3,25 @@
 research_task:
   name: "research_task"
   description: >
-    Delegate to the Market Research Specialist.
-    Research the topic "{query}". Use the web search & scrape tool (several
-    queries are fine) to find recent financial metrics for 6-12 relevant
-    companies. Then call the "Save Metrics CSV" tool ONCE with a CSV that has
-    a header row, a first column named "company", and numeric columns such as
-    revenue_usd_bn, net_income_usd_bn, operating_margin_pct, yoy_growth_pct.
-    Use plain numbers only (no currency symbols). Never invent values; leave a
-    cell empty if the figure was not found. Finish with a short list of the
-    sources you used.
+    Delegate to the Market Research Specialist. Research "{query}" for calendar
+    Q3 2026 (July 1 through September 30). Call the Web Search and Scrape tool
+    exactly once. It queries Tavily for six companies, aligns each company's
+    fiscal reporting period, prioritizes official sources, and saves the
+    source-backed financial facts to the run CSV. Do not call other search
+    queries or try to write another CSV. Return a concise summary of the saved
+    facts and the source URLs. Unsupported fields remain blank.
   expected_output: >
-    The path of the saved metrics CSV file plus a bullet list of source URLs
-    and key qualitative findings.
+    Confirmation of the current run's saved metrics CSV, the fiscal period
+    used for each company, a concise research summary, and source URLs.
 
 analysis_task:
   name: "analysis_task"
   description: >
-    Delegate to the Financial Data Analyst.
-    Take the CSV file saved by the research task and run the "Calculate
-    Financial Metrics" tool on its path. Verify numeric consistency (missing
-    values, duplicates, negative or implausible numbers) and interpret the
-    mean, min, max and standard deviation of every metric.
+    Delegate to the Financial Data Analyst. Load the source-backed CSV saved
+    by the research task and run the "Calculate Financial Metrics" tool exactly
+    once on its path. Verify numeric consistency (missing values, duplicates,
+    negative or implausible numbers) and interpret the mean, min, max and
+    standard deviation of every metric.
   expected_output: >
     The Markdown statistics table returned by the tool, followed by a short
     list of data-quality findings and 3-5 analytical observations.
@@ -38,4 +36,7 @@ writing_task:
     Metrics (embed the statistics table), Analysis & Insights, Risks &
     Limitations, Conclusion, Sources. Do not add a top-level "#" title.
   expected_output: >
-    A complete Markdown report with the required sections.
+    A complete Markdown report with the required sections. State that this is
+    a calendar Q3 2026 comparison and identify the reporting period for each
+    company because fiscal quarters differ. Include the source URLs. Do not
+    add figures that conflict with the Researcher's CSV or evidence.

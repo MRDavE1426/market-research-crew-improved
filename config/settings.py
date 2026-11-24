@@ -72,7 +72,7 @@ def get_settings() -> Settings:
     out.mkdir(parents=True, exist_ok=True)
     return Settings(
         manager_llm=os.getenv("MANAGER_LLM", "groq/openai/gpt-oss-120b"),
-        worker_llm=os.getenv("WORKER_LLM", "groq/openai/gpt-oss-120b"),
+        worker_llm=os.getenv("WORKER_LLM", "groq/qwen/qwen3.8-27b"),
         output_dir=out,
         openai_api_key=os.getenv("OPENAI_API_KEY") or None,
         groq_api_key=os.getenv("GROQ_API_KEY") or None,

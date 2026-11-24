@@ -4,6 +4,7 @@ import math
 import pandas as pd
 import pytest
 
+import config.settings as cfg
 from crew.tools.financial_tool import (
     MetricsError,
     calculate_financial_metrics,
@@ -65,6 +66,18 @@ def test_tool_wrapper_reports_missing_file_instead_of_crashing(tmp_path):
     assert out.startswith("ERROR:")
 
 
+def test_tool_uses_current_run_csv_if_manager_passes_bad_relative_path(tmp_path):
+    output_dir = tmp_path / "run-output"
+    output_dir.mkdir()
+    (output_dir / "metrics.csv").write_text(MOCK_CSV, encoding="utf-8")
+    cfg.set_output_dir(output_dir)
+    try:
+        out = calculate_financial_metrics.run(csv_path="research_output/metrics.csv")
+    finally:
+        cfg.set_output_dir(None)
+    assert "| revenue | 4 | 25.00 |" in out
+
+
 def test_currency_and_percent_strings_are_coerced(tmp_path):
     path = tmp_path / "messy.csv"
     path.write_text('company,revenue,margin\nA,"$1,200",10%\nB,"$800",20%\n')
@@ -98,6 +111,15 @@ def test_empty_and_non_numeric_files_raise(tmp_path):
     text_only.write_text("a,b\nfoo,bar\n")
     with pytest.raises(MetricsError):
         load_metrics(text_only)
+
+
+def test_empty_research_csv_is_rejected_without_overwriting_saved_metrics(tmp_path):
+    destination = tmp_path / "metrics.csv"
+    destination.write_text("company,revenue\nAlpha,5\n", encoding="utf-8")
+    original = destination.read_text(encoding="utf-8")
+    with pytest.raises(MetricsError, match="no supported numeric"):
+        save_metrics_csv_text("company,revenue\nAlpha,\nBeta,\n", destination)
+    assert destination.read_text(encoding="utf-8") == original
 
 
 def test_save_metrics_csv_text_strips_code_fences(tmp_path):

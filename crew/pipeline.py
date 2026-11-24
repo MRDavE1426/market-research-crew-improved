@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from pathlib import Path
 
 from config.settings import SAMPLE_METRICS_CSV, get_settings, set_output_dir
@@ -28,11 +29,27 @@ def run_pipeline(query: str, offline: bool = False, output_dir: str | Path | Non
             markdown = run_offline(settings, query, bench)
         else:
             from .crew import MarketResearchCrew, check_live_requirements
+            from .tools.search_tool import clear_research_run
             check_live_requirements(settings)
             # A leftover metrics.csv from an earlier (or offline) run must never be
             # mistaken for data the Researcher collected during THIS run.
             settings.metrics_csv_path.unlink(missing_ok=True)
-            markdown = MarketResearchCrew(settings, query, bench).kickoff()
+            previous_run_id = os.environ.get("MARKET_RESEARCH_RUN_ID")
+            previous_topic = os.environ.get("MARKET_RESEARCH_TOPIC")
+            os.environ["MARKET_RESEARCH_RUN_ID"] = bench.run_id
+            os.environ["MARKET_RESEARCH_TOPIC"] = query
+            try:
+                markdown = MarketResearchCrew(settings, query, bench).kickoff()
+            finally:
+                clear_research_run(bench.run_id)
+                if previous_run_id is None:
+                    os.environ.pop("MARKET_RESEARCH_RUN_ID", None)
+                else:
+                    os.environ["MARKET_RESEARCH_RUN_ID"] = previous_run_id
+                if previous_topic is None:
+                    os.environ.pop("MARKET_RESEARCH_TOPIC", None)
+                else:
+                    os.environ["MARKET_RESEARCH_TOPIC"] = previous_topic
 
         settings.markdown_path.write_text(markdown, encoding="utf-8")
 

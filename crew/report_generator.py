@@ -300,7 +300,7 @@ def _draw_banner(canv, doc, meta: dict, first: bool):
         canv.setFont("Helvetica", 8.5)
         canv.setFillColor(colors.HexColor("#C9D6EA"))
         line1 = f"Generated: {meta['generated']}   |   Run ID: {meta['run_id']}   |   Mode: {meta['mode']}"
-        line2 = f"Author: {meta['author']}   |   Data source: {meta['data_source']}"
+        line2 = f"Data source: {meta['data_source']}"
         canv.drawString(MARGIN_X, PAGE_H - 2.5 * cm, sanitize(line1)[:130])
         canv.drawString(MARGIN_X, PAGE_H - 2.9 * cm, sanitize(line2)[:130])
     else:
@@ -330,7 +330,7 @@ def generate_pdf_report(
         "generated": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "run_id": "-",
         "mode": "live",
-        "author": "Multi-Agent Market Research Crew (CrewAI)",
+        "author": "",
         "data_source": "-",
     }
     meta.update(metadata or {})

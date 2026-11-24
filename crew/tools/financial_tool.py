@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import io
 import math
+import os
 import re
 from pathlib import Path
 
@@ -153,9 +154,15 @@ def summarize_csv_to_markdown(csv_path: str | Path) -> str:
 def calculate_financial_metrics(csv_path: str) -> str:
     """Loads corporate metrics from a CSV file path with Pandas and returns
     summary statistics (count, mean, std, min, max for every numeric column)
-    plus data-quality checks, formatted as Markdown."""
+    plus data-quality checks, formatted as Markdown. If a manager supplies an
+    invalid relative path, use this run's configured metrics CSV when present."""
     try:
-        return summarize_csv_to_markdown(csv_path)
+        requested = Path(str(csv_path).strip().strip("'\""))
+        if not requested.is_absolute() and not requested.is_file():
+            current_run_csv = get_settings().metrics_csv_path
+            if current_run_csv.is_file():
+                requested = current_run_csv
+        return summarize_csv_to_markdown(requested)
     except MetricsError as exc:
         return f"ERROR: {exc}"
 
@@ -171,6 +178,9 @@ def save_metrics_csv_text(csv_content: str, destination: Path) -> str:
         raise MetricsError(f"CSV text could not be parsed: {exc}") from exc
     if df.empty or len(df.columns) < 2:
         raise MetricsError("CSV needs a header and at least one data row with 2+ columns.")
+    numeric_values = df.iloc[:, 1:].apply(pd.to_numeric, errors="coerce")
+    if not numeric_values.notna().to_numpy().any():
+        raise MetricsError("CSV contains no supported numeric financial values; existing metrics were preserved.")
     destination.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(destination, index=False)
     return str(destination)
@@ -180,8 +190,11 @@ def save_metrics_csv_text(csv_content: str, destination: Path) -> str:
 def save_metrics_to_csv(csv_content: str) -> str:
     """Saves collected company metrics (CSV text with a header row) to disk and
     returns the file path that the Financial Data Analyst must analyse."""
+    destination = get_settings().metrics_csv_path
+    if os.getenv("MARKET_RESEARCH_RUN_ID") and destination.is_file() and destination.stat().st_size:
+        return f"Metrics already saved for this live research run; preserved at: {destination}"
     try:
-        path = save_metrics_csv_text(csv_content, get_settings().metrics_csv_path)
+        path = save_metrics_csv_text(csv_content, destination)
     except MetricsError as exc:
         return f"ERROR: {exc}"
     return f"Metrics saved to: {path}"

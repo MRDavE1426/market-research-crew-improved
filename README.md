@@ -30,13 +30,19 @@ Market Research Specialist   Financial Data Analyst   Technical Reports Writer
    source .venv/bin/activate          # Windows: .venv\Scripts\activate
    pip install -r requirements.txt
    ```
+   In Windows PowerShell, activation may be blocked by the execution policy. You can use the venv interpreter directly instead:
+   ```powershell
+   .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+   .\.venv\Scripts\python.exe main.py --query "Tech Sector Q3 Analysis"
+   .\.venv\Scripts\python.exe -m pytest -v
+   ```
 2. Configure `.env` (copy the template, then fill in your keys):
    ```bash
    cp .env.example .env               # Windows: copy .env.example .env
    ```
    | Variable | Needed for |
    |---|---|
-   | `GROQ_API_KEY` | manager LLM + worker agents (defaults: `groq/openai/gpt-oss-120b`) |
+   | `GROQ_API_KEY` | manager LLM + worker agents (defaults: `groq/openai/gpt-oss-120b` manager and `groq/qwen/qwen3.8-27b` workers) |
    | `OPENAI_API_KEY` | only required when selecting an OpenAI model |
    | `TAVILY_API_KEY` **or** `SERPER_API_KEY` | web search (Tavily is used first if both are set) |
    | `ANTHROPIC_API_KEY` | only if you select an Anthropic model |
@@ -47,7 +53,7 @@ Market Research Specialist   Financial Data Analyst   Technical Reports Writer
    ```
 4. Run tests:
    ```bash
-   pytest
+   python -m pytest -v
    ```
 
 ### Keyless demo mode
@@ -104,7 +110,7 @@ data/sample_metrics.csv    synthetic demo dataset
    `[MANAGER] Initializing hierarchical workflow | manager_llm=...`, then `[ROUTING] delegation | Crew Manager -> <specialist>`
    lines followed by each specialist's tool calls (Researcher fetching, Analyst parsing, Writer generating).
 2. **Aggregation & PDF** - `output/market_report.pdf` is written with the banner, the Pandas tables and page numbers.
-3. **Test suite** - `pytest` (43 tests, no network or API keys needed).
+3. **Test suite** - `python -m pytest -v` (46 tests; no network or API keys needed).
 
 ### What the tests cover
 - `test_financial_tool.py` - statistics on a mock CSV (mean/min/max/std), currency/percent coercion, data-quality flags, edge cases.
@@ -131,5 +137,5 @@ data/sample_metrics.csv    synthetic demo dataset
 
 ## Troubleshooting
 - `Configuration error: Missing configuration ...` - fill the keys in `.env` (the app fails fast before spending tokens).
-- Empty or poor research - the Researcher is told never to invent numbers; check your search key/quota and try a more specific `--query`.
+- Live quarterly research aligns each firm to the requested calendar period and labels its fiscal period. Source-backed metrics are extracted from current Tavily evidence; unsupported values remain blank. Check your search key/quota if live evidence is unavailable.
 - `ModuleNotFoundError` for a provider - for Claude models install `pip install "crewai[anthropic]"`.

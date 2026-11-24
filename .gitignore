@@ -5,9 +5,12 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.pytest-run-tmp*/
+.pytest-crewai-data/
 .venv/
 venv/
 *.egg-info/
+.crewai-runtime/
 
 # generated runtime output (sample_outputs/ is committed on purpose)
 output/*

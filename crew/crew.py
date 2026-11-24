@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 
-from crewai import Crew, Process
+from crewai import Agent, Crew, Process
 
 from config.settings import Settings
 
@@ -64,11 +64,35 @@ class MarketResearchCrew:
             agent = self.bench.latest_active_agent() or getattr(output, "agent", None) or MANAGER_LABEL
             self.bench.record_task(name, agent, summary=str(getattr(output, "raw", "")))
 
+        manager_llm = make_llm(
+            self.settings.manager_llm, temperature=0.1, max_tokens=2800
+        )
+        manager_agent = Agent(
+            role=MANAGER_LABEL,
+            goal=(
+                "Route each pipeline task to its matching specialist once, accept "
+                "completed tool-backed work, and continue. Keep delegation context "
+                "concise: pass task instructions and a short summary of prior outputs, "
+                "not full previous transcripts. Do not repeat research after the CSV "
+                "has been saved."
+            ),
+            backstory=(
+                "You coordinate the market researcher, financial analyst, and report "
+                "writer. Delegate research_task to the Market Research Specialist, "
+                "analysis_task to the Financial Data Analyst, and writing_task to the "
+                "Technical Reports Writer."
+            ),
+            llm=manager_llm,
+            allow_delegation=True,
+            max_iter=2,
+            verbose=True,
+        )
         return Crew(
             agents=list(agents.values()),
             tasks=tasks,
             process=Process.hierarchical,                      # manager delegates dynamically
-            manager_llm=make_llm(self.settings.manager_llm, temperature=0.1),
+            manager_llm=manager_llm,
+            manager_agent=manager_agent,
             task_callback=on_task_done,
             verbose=True,
         )

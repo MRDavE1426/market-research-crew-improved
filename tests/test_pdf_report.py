@@ -54,6 +54,7 @@ def test_pdf_contains_banner_tables_and_page_numbers(tmp_path, frames):
     total = len(reader.pages)
     first = reader.pages[0].extract_text()
     assert "Market Research Report" in first and "Tech Sector Q3 Analysis" in first   # banner
+    assert "Author:" not in first
     assert "Executive Summary" in first
     full = "\n".join(p.extract_text() for p in reader.pages)
     assert "Quantitative Summary" in full and "25.00" in full                         # pandas table
